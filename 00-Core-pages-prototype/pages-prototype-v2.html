@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f5f3;color:#1a1a1a;height:100vh;display:flex;overflow:hidden}
+.sidebar{width:216px;min-width:216px;background:#fff;border-right:1px solid rgba(0,0,0,0.08);display:flex;flex-direction:column}
+.logo-wrap{padding:18px 16px 14px;border-bottom:1px solid rgba(0,0,0,0.07)}
+.logo-row{display:flex;align-items:center;gap:9px}
+.logo-icon{width:30px;height:30px;background:#534AB7;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.logo-name{font-size:14px;font-weight:600;color:#1a1a1a}
+.logo-sub{font-size:10px;color:#888;margin-top:1px}
+nav{flex:1;padding:10px 8px;overflow-y:auto}
+.nav-sec{margin-bottom:14px}
+.nav-lbl{font-size:9px;font-weight:600;color:#aaa;letter-spacing:.08em;text-transform:uppercase;padding:0 8px;margin-bottom:4px}
+.nav-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 8px;border:none;background:none;border-radius:6px;font-size:12.5px;color:#555;cursor:pointer;text-align:left;transition:.12s}
+.nav-btn:hover{background:#f3f3f1;color:#111}
+.nav-btn.on{background:#EEEDFE;color:#534AB7;font-weight:600}
+.nav-btn svg{width:14px;height:14px;flex-shrink:0;opacity:.75}
+.nav-btn.on svg{opacity:1}
+.nbadge{margin-left:auto;background:#E24B4A;color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;font-weight:700}
+.nbadge.purple{background:#534AB7}
+.sidebar-foot{padding:12px 14px;border-top:1px solid rgba(0,0,0,0.07);display:flex;align-items:center;gap:8px}
+.uav{width:30px;height:30px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#534AB7}
+.uname{font-size:12px;font-weight:600}
+.urole{font-size:10px;color:#888}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid rgba(0,0,0,0.07);padding:0 22px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.tb-title{font-size:14px;font-weight:600;flex:1}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid rgba(0,0,0,0.15);background:#fff;color:#333;transition:.12s}
+.btn:hover{background:#f5f5f3}
+.btn-p{background:#534AB7;color:#fff;border-color:#534AB7}
+.btn-p:hover{background:#3C3489}
+.btn-sm{padding:4px 10px;font-size:11px}
+.content{flex:1;overflow-y:auto;padding:20px 22px}
+.screen{display:none}
+.screen.on{display:block}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mc{background:#f0efed;border-radius:8px;padding:13px 15px}
+.mc-lbl{font-size:10px;color:#777;margin-bottom:3px}
+.mc-val{font-size:22px;font-weight:600;color:#1a1a1a;line-height:1}
+.mc-sub{font-size:10px;color:#999;margin-top:3px}
+.card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:16px 18px}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-t{font-size:13px;font-weight:600}
+.sec-s{font-size:11px;color:#888}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.b-stable{background:#EAF3DE;color:#3B6D11}
+.b-watch{background:#FAEEDA;color:#854F0B}
+.b-risk{background:#FCEBEB;color:#A32D2D}
+.b-purple{background:#EEEDFE;color:#534AB7}
+.fc{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:14px;cursor:pointer;transition:.18s}
+.fc:hover{border-color:rgba(83,74,183,.35);box-shadow:0 2px 8px rgba(83,74,183,.07)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.fhdr{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.av-c{background:#FAECE7;color:#993C1D}
+.av-b{background:#E6F1FB;color:#185FA5}
+.av-t{background:#E1F5EE;color:#0F6E56}
+.av-p{background:#EEEDFE;color:#534AB7}
+.fn{font-size:13px;font-weight:600}
+.fr{font-size:10px;color:#666}
+.fc-meta{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding-top:9px;border-top:1px solid rgba(0,0,0,0.06)}
+.eod-ts{font-size:10px;color:#999}
+.flag-c{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;padding:13px 15px;border-left:3px solid #E24B4A;margin-bottom:10px}
+.flag-c.w{border-left-color:#EF9F27}
+.fl-row{display:flex;align-items:flex-start;gap:10px}
+.fl-body{flex:1}
+.fl-name{font-size:12.5px;font-weight:600;margin-bottom:3px}
+.fl-desc{font-size:11.5px;color:#555;line-height:1.55}
+.fl-plan{margin-top:8px;padding:9px;border-radius:6px;font-size:11px;line-height:1.6}
+.fl-plan.r{background:#FCEBEB;color:#A32D2D}
+.fl-plan.w{background:#FAEEDA;color:#854F0B}
+.fl-acts{display:flex;gap:6px;margin-top:8px}
+.detail-grid{display:grid;grid-template-columns:1fr 300px;gap:14px}
+.eod-item{padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+.eod-item:last-child{border-bottom:none}
+.eod-dt{font-size:10px;color:#888;margin-bottom:4px}
+.eod-txt{font-size:12px;line-height:1.65;color:#222}
+.buddy-reply{margin-top:8px;padding:9px 11px;background:#EEEDFE;border-radius:7px;font-size:11px;color:#3C3489;line-height:1.6}
+.buddy-lbl{font-size:9px;font-weight:700;color:#534AB7;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.fu-item{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+.fu-item:last-child{border-bottom:none}
+.chk{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(0,0,0,.22);flex-shrink:0;margin-top:1px;cursor:pointer;transition:.15s}
+.chk.done{background:#534AB7;border-color:#534AB7}
+.fu-txt{font-size:12px;line-height:1.5;color:#222}
+.fu-src{font-size:10px;color:#999;margin-top:2px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+.stat-row:last-child{border-bottom:none}
+.stat-lbl{font-size:12px;color:#666}
+.stat-v{font-size:12px;font-weight:600}
+.mtg-c{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.mtg-date{width:40px;height:40px;border-radius:7px;background:#EEEDFE;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.mtg-day{font-size:15px;font-weight:700;color:#534AB7;line-height:1}
+.mtg-mon{font-size:8px;color:#7F77DD;text-transform:uppercase}
+.mtg-info{flex:1}
+.mtg-name{font-size:12px;font-weight:600}
+.mtg-time{font-size:10px;color:#888}
+.tabs{display:flex;gap:2px;background:#eeecea;padding:3px;border-radius:8px;width:fit-content;margin-bottom:16px}
+.tab{padding:5px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;color:#666;border:none;background:none;transition:.12s}
+.tab.on{background:#fff;color:#111;font-weight:600}
+.bar-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.bar-lbl{font-size:10px;color:#888;width:26px;text-align:right;flex-shrink:0}
+.bar-trk{flex:1;height:5px;background:#eee;border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.bar-v{font-size:10px;color:#888;width:16px;flex-shrink:0}
+.mini-chart{display:flex;align-items:flex-end;gap:3px;height:28px;margin-top:6px}
+.mb{width:9px;border-radius:2px 2px 0 0}
+.mb.s{background:#C0DD97}
+.mb.w{background:#FAC775}
+.mb.r{background:#F09595}
+.chip{display:inline-flex;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid rgba(0,0,0,.14);background:#fff;color:#666;margin-right:5px;margin-bottom:8px;transition:.12s}
+.chip.on{background:#EEEDFE;border-color:#AFA9EC;color:#534AB7}
+textarea{width:100%;border:1px solid rgba(0,0,0,.15);border-radius:7px;padding:9px 11px;font-size:12px;font-family:inherit;color:#222;background:#fff;resize:vertical;min-height:90px;line-height:1.6}
+textarea:focus{outline:none;border-color:#534AB7}
+select,input[type=text]{height:30px;padding:0 9px;border:1px solid rgba(0,0,0,.15);border-radius:6px;font-size:12px;background:#fff;color:#222;width:100%}
+select:focus,input:focus{outline:none;border-color:#534AB7}
+.divider{height:1px;background:rgba(0,0,0,0.06);margin:13px 0}
+.ph-hero{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.ph-av{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex-shrink:0}
+.ph-name{font-size:17px;font-weight:700}
+.ph-meta{font-size:12px;color:#666;margin-top:2px}
+.ph-badges{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.wk-badge{background:#f0efed;color:#777;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.ph-acts{display:flex;gap:7px;margin-left:auto;flex-shrink:0}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:50;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:12px;width:500px;max-height:82vh;overflow-y:auto;padding:22px}
+.modal-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.brief-sec{padding:10px 0;border-bottom:1px solid rgba(0,0,0,.07)}
+.brief-sec:last-child{border-bottom:none}
+.brief-hd{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.brief-txt{font-size:12px;line-height:1.65;color:#222}
+.q-item{display:flex;gap:7px;padding:5px 0}
+.q-num{font-size:12px;font-weight:700;color:#534AB7;width:16px;flex-shrink:0}
+.q-txt{font-size:12px;line-height:1.5;color:#222}
+.toast{position:fixed;bottom:18px;right:18px;background:#534AB7;color:#fff;padding:9px 15px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:200}
+.toast.show{opacity:1}
+.donut-wrap{position:relative;width:72px;height:72px;flex-shrink:0}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-num{font-size:16px;font-weight:700;line-height:1}
+.donut-lbl{font-size:8px;color:#888}
+.legend{display:flex;flex-direction:column;gap:5px;justify-content:center}
+.leg-i{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
+.leg-d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.snippet{font-size:11px;color:#666;line-height:1.55;margin-top:6px}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo-row">
+      <div class="logo-icon">TB</div>
+      <div>
+        <div class="logo-name">Tana Buddy</div>
+        <div class="logo-sub">TS Associate Portal</div>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-sec">
+      <div class="nav-lbl">Overview</div>
+      <button class="nav-btn on" onclick="go('dash')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-btn" onclick="go('fellows')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5.5" cy="4" r="2.5"/><path d="M1 13c0-2 2-3.5 4.5-3.5S10 11 10 13"/><circle cx="12" cy="4.5" r="2"/><path d="M10.5 13c0-1.5 1-2.5 2.5-2.5"/></svg>
+        All Fellows
+        <span class="nbadge purple">12</span>
+      </button>
+      <button class="nav-btn" onclick="go('mine')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-2.5 2.5-4 6-4s6 1.5 6 4"/></svg>
+        My Fellows
+        <span class="nbadge">3</span>
+      </button>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">Attention</div>
+      <button class="nav-btn" onclick="go('flags')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 1v14M3 1l9 3-9 4"/></svg>
+        Risk Flags
+        <span class="nbadge">2</span>
+      </button>
+      <button class="nav-btn" onclick="go('meetings')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="12" rx="2"/><path d="M5 1v4M11 1v4M1 7h14"/></svg>
+        Meetings
+      </button>
+    </div>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="uav">BK</div>
+    <div><div class="uname">Brian Kamau</div><div class="urole">TS Associate</div></div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title" id="tb-title">Dashboard</div>
+    <button class="btn btn-p" onclick="go('meetings')">+ Add meeting</button>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="s-dash" class="screen on">
+      <div class="g4">
+        <div class="mc"><div class="mc-lbl">Fellows I manage</div><div class="mc-val">3</div><div class="mc-sub">Across 2 companies</div></div>
+        <div class="mc"><div class="mc-lbl">Meetings this week</div><div class="mc-val">4</div><div class="mc-sub">Next: Amara · Wed</div></div>
+        <div class="mc"><div class="mc-lbl">Active risk flags</div><div class="mc-val" style="color:#A32D2D">2</div><div class="mc-sub">Needs attention</div></div>
+        <div class="mc"><div class="mc-lbl">Fellows with blockers</div><div class="mc-val" style="color:#854F0B">2</div><div class="mc-sub">From latest EODs</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="sec-hdr"><span class="sec-t">Portfolio health</span><span class="badge b-purple">My 3 fellows</span></div>
+          <div style="display:flex;align-items:center;gap:18px;margin-bottom:14px">
+            <div class="donut-wrap">
+              <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="26" fill="none" stroke="#EAF3DE" stroke-width="11"/>
+                <circle cx="36" cy="36" r="26" fill="none" stroke="#639922" stroke-width="11" stroke-dasharray="54 109" stroke-dashoffset="0" transform="rotate(-90 36 36)"/>
+                <circle cx="36" cy="36" r="26" fill="none" stroke="#EF9F27" stroke-width="11" stroke-dasharray="36 127" stroke-dashoffset="-54" transform="rotate(-90 36 36)"/>
+                <circle cx="36" cy="36" r="26" fill="none" stroke="#E24B4A" stroke-width="11" stroke-dasharray="19 144" stroke-dashoffset="-90" transform="rotate(-90 36 36)"/>
+              </svg>
+              <div class="donut-center"><div class="donut-num">3</div><div class="donut-lbl">fellows</div></div>
+            </div>
+            <div class="legend">
+              <div class="leg-i"><div class="leg-d" style="background:#639922"></div>Stable · 1</div>
+              <div class="leg-i"><div class="leg-d" style="background:#BA7517"></div>Watch · 1</div>
+              <div class="leg-i"><div class="leg-d" style="background:#E24B4A"></div>At risk · 1</div>
+            </div>
+          </div>
+          <div class="sec-t" style="font-size:11px;margin-bottom:7px">EOD activity this week</div>
+          <div class="bar-row"><div class="bar-lbl">Mon</div><div class="bar-trk"><div class="bar-fill" style="width:100%;background:#C0DD97"></div></div><div class="bar-v">3</div></div>
+          <div class="bar-row"><div class="bar-lbl">Tue</div><div class="bar-trk"><div class="bar-fill" style="width:67%;background:#C0DD97"></div></div><div class="bar-v">2</div></div>
+          <div class="bar-row"><div class="bar-lbl">Wed</div><div class="bar-trk"><div class="bar-fill" style="width:100%;background:#C0DD97"></div></div><div class="bar-v">3</div></div>
+          <div class="bar-row"><div class="bar-lbl">Thu</div><div class="bar-trk"><div class="bar-fill" style="width:33%;background:#FAC775"></div></div><div class="bar-v">1</div></div>
+          <div class="bar-row"><div class="bar-lbl">Fri</div><div class="bar-trk"><div class="bar-fill" style="width:0%"></div></div><div class="bar-v">–</div></div>
+        </div>
+        <div class="card">
+          <div class="sec-hdr"><span class="sec-t">Active flags</span><button class="btn btn-sm" onclick="go('flags')">View all</button></div>
+          <div class="flag-c" style="padding:10px 12px;margin-bottom:8px">
+            <div class="fl-row">
+              <div class="av av-c" style="width:28px;height:28px;font-size:10px">AO</div>
+              <div class="fl-body">
+                <div class="fl-name" style="font-size:12px">Amara Osei · <span style="color:#A32D2D">At risk</span></div>
+                <div class="fl-desc" style="font-size:11px">Wellbeing concern — isolation and overwhelm signals across 3 consecutive EODs.</div>
+              </div>
+            </div>
+          </div>
+          <div class="flag-c w" style="padding:10px 12px;margin-bottom:0">
+            <div class="fl-row">
+              <div class="av av-b" style="width:28px;height:28px;font-size:10px">KN</div>
+              <div class="fl-body">
+                <div class="fl-name" style="font-size:12px">Kofi Nkrumah · <span style="color:#854F0B">Watch</span></div>
+                <div class="fl-desc" style="font-size:11px">No EOD for 2 business days. Last EOD flagged deadline pressure.</div>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="sec-hdr"><span class="sec-t">Next meetings</span></div>
+          <div class="mtg-c" style="margin-bottom:7px">
+            <div class="mtg-date"><div class="mtg-day">9</div><div class="mtg-mon">Apr</div></div>
+            <div class="mtg-info"><div class="mtg-name">Amara Osei — weekly sync</div><div class="mtg-time">Wed · 10:00 AM EAT</div></div>
+            <button class="btn btn-sm btn-p" onclick="go('amara')">Brief</button>
+          </div>
+          <div class="mtg-c">
+            <div class="mtg-date"><div class="mtg-day">11</div><div class="mtg-mon">Apr</div></div>
+            <div class="mtg-info"><div class="mtg-name">Kofi Nkrumah — check-in</div><div class="mtg-time">Fri · 2:00 PM EAT</div></div>
+            <button class="btn btn-sm" onclick="go('kofi')">Brief</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-hdr"><span class="sec-t">My fellows — quick view</span><button class="btn btn-sm" onclick="go('mine')">View all</button></div>
+        <div class="fgrid">
+          <div class="fc" onclick="go('amara')"><div class="fhdr"><div class="av av-c">AO</div><div><div class="fn">Amara Osei</div><div class="fr">Junior Data Analyst · Dutch Fintech Co</div></div></div><div class="snippet">"Finished the dashboard but GitLab pipelines failing — spent 2hrs debugging with no luck..."</div><div class="fc-meta"><span class="badge b-risk">At risk</span><span class="eod-ts">Today</span></div></div>
+          <div class="fc" onclick="go('kofi')"><div class="fhdr"><div class="av av-b">KN</div><div><div class="fn">Kofi Nkrumah</div><div class="fr">Backend Developer · LogiTech Berlin</div></div></div><div class="snippet">"Sprint deadline Friday — feeling pressure but manageable. Need to sync with team lead..."</div><div class="fc-meta"><span class="badge b-watch">Watch</span><span class="eod-ts">2 days ago</span></div></div>
+          <div class="fc" onclick="go('zara')"><div class="fhdr"><div class="av av-t">ZM</div><div><div class="fn">Zara Mwangi</div><div class="fr">UX Researcher · Dutch Fintech Co</div></div></div><div class="snippet">"User interviews went really well today. Excited about the patterns emerging..."</div><div class="fc-meta"><span class="badge b-stable">Stable</span><span class="eod-ts">Yesterday</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL FELLOWS -->
+    <div id="s-fellows" class="screen">
+      <div style="margin-bottom:14px">
+        <span class="chip on" onclick="chipOn(this)">All (12)</span>
+        <span class="chip" onclick="chipOn(this)">Stable</span>
+        <span class="chip" onclick="chipOn(this)">Watch</span>
+        <span class="chip" onclick="chipOn(this)">At risk</span>
+        <span class="chip" onclick="chipOn(this)">Dutch Fintech Co</span>
+        <span class="chip" onclick="chipOn(this)">LogiTech Berlin</span>
+      </div>
+      <div class="fgrid">
+        <div class="fc" onclick="go('amara')"><div class="fhdr"><div class="av av-c">AO</div><div><div class="fn">Amara Osei</div><div class="fr">Data Analyst · Wk 3 · Dutch Fintech Co</div></div></div><div class="fc-meta"><span class="badge b-risk">At risk</span><span class="badge b-purple" style="font-size:9px">Mine</span><span class="eod-ts">Today</span></div></div>
+        <div class="fc" onclick="go('kofi')"><div class="fhdr"><div class="av av-b">KN</div><div><div class="fn">Kofi Nkrumah</div><div class="fr">Backend Dev · Wk 5 · LogiTech Berlin</div></div></div><div class="fc-meta"><span class="badge b-watch">Watch</span><span class="badge b-purple" style="font-size:9px">Mine</span><span class="eod-ts">2d ago</span></div></div>
+        <div class="fc" onclick="go('zara')"><div class="fhdr"><div class="av av-t">ZM</div><div><div class="fn">Zara Mwangi</div><div class="fr">UX Researcher · Wk 4 · Dutch Fintech Co</div></div></div><div class="fc-meta"><span class="badge b-stable">Stable</span><span class="badge b-purple" style="font-size:9px">Mine</span><span class="eod-ts">Yesterday</span></div></div>
+        <div class="fc"><div class="fhdr"><div class="av av-p">TM</div><div><div class="fn">Taiwo Makinde</div><div class="fr">Data Engineer · Wk 8 · LogiTech Berlin</div></div></div><div class="fc-meta"><span class="badge b-stable">Stable</span><span class="eod-ts">Today</span></div></div>
+        <div class="fc"><div class="fhdr"><div class="av av-t">FO</div><div><div class="fn">Fatuma Ochieng</div><div class="fr">Product Analyst · Wk 2 · Dutch Fintech Co</div></div></div><div class="fc-meta"><span class="badge b-watch">Watch</span><span class="eod-ts">Today</span></div></div>
+        <div class="fc"><div class="fhdr"><div class="av av-b">SA</div><div><div class="fn">Samuel Asante</div><div class="fr">ML Engineer · Wk 10 · LogiTech Berlin</div></div></div><div class="fc-meta"><span class="badge b-stable">Stable</span><span class="eod-ts">Yesterday</span></div></div>
+        <div class="fc"><div class="fhdr"><div class="av av-c">NW</div><div><div class="fn">Njeri Wambui</div><div class="fr">Frontend Dev · Wk 6 · Dutch Fintech Co</div></div></div><div class="fc-meta"><span class="badge b-stable">Stable</span><span class="eod-ts">Today</span></div></div>
+        <div class="fc"><div class="fhdr"><div class="av av-p">EK</div><div><div class="fn">Emeka Kalu</div><div class="fr">DevOps Eng · Wk 7 · LogiTech Berlin</div></div></div><div class="fc-meta"><span class="badge b-watch">Watch</span><span class="eod-ts">3d ago</span></div></div>
+      </div>
+    </div>
+
+    <!-- MY FELLOWS -->
+    <div id="s-mine" class="screen">
+      <div class="tabs">
+        <button class="tab on" onclick="swTab(this,'t-all')">All fellows</button>
+        <button class="tab" onclick="swTab(this,'t-mine')">My portfolio (3)</button>
+      </div>
+      <div id="t-all">
+        <div class="fgrid">
+          <div class="fc" onclick="go('amara')"><div class="fhdr"><div class="av av-c">AO</div><div><div class="fn">Amara Osei</div><div class="fr">Data Analyst · Dutch Fintech Co</div></div></div><div class="fc-meta"><span class="badge b-risk">At risk</span><span class="badge b-purple" style="font-size:9px">Mine</span></div></div>
+          <div class="fc" onclick="go('kofi')"><div class="fhdr"><div class="av av-b">KN</div><div><div class="fn">Kofi Nkrumah</div><div class="fr">Backend Dev · LogiTech Berlin</div></div></div><div class="fc-meta"><span class="badge b-watch">Watch</span><span class="badge b-purple" style="font-size:9px">Mine</span></div></div>
+          <div class="fc" onclick="go('zara')"><div class="fhdr"><div class="av av-t">ZM</div><div><div class="fn">Zara Mwangi</div><div class="fr">UX Researcher · Dutch Fintech Co</div></div></div><div class="fc-meta"><span class="badge b-stable">Stable</span><span class="badge b-purple" style="font-size:9px">Mine</span></div></div>
+          <div class="fc"><div class="fhdr"><div class="av av-p">TM</div><div><div class="fn">Taiwo Makinde</div><div class="fr">Data Engineer · LogiTech Berlin</div></div></div><div class="fc-meta"><span class="badge b-stable">Stable</span></div></div>
+          <div class="fc"><div class="fhdr"><div class="av av-t">FO</div><div><div class="fn">Fatuma Ochieng</div><div class="fr">Product Analyst · Dutch Fintech Co</div></div></div><div class="fc-meta"><span class="badge b-watch">Watch</span></div></div>
+        </div>
+      </div>
+      <div id="t-mine" style="display:none">
+        <div class="fgrid">
+          <div class="fc" onclick="go('amara')"><div class="fhdr"><div class="av av-c">AO</div><div><div class="fn">Amara Osei</div><div class="fr">Data Analyst · Dutch Fintech Co</div></div></div><div class="snippet">"Finished the dashboard but GitLab pipelines failing..."</div><div class="fc-meta"><span class="badge b-risk">At risk</span><span class="eod-ts">EOD · Today</span></div></div>
+          <div class="fc" onclick="go('kofi')"><div class="fhdr"><div class="av av-b">KN</div><div><div class="fn">Kofi Nkrumah</div><div class="fr">Backend Dev · LogiTech Berlin</div></div></div><div class="snippet">"Sprint deadline Friday — feeling pressure..."</div><div class="fc-meta"><span class="badge b-watch">Watch</span><span class="eod-ts">EOD · 2d ago</span></div></div>
+          <div class="fc" onclick="go('zara')"><div class="fhdr"><div class="av av-t">ZM</div><div><div class="fn">Zara Mwangi</div><div class="fr">UX Researcher · Dutch Fintech Co</div></div></div><div class="snippet">"User interviews went really well today..."</div><div class="fc-meta"><span class="badge b-stable">Stable</span><span class="eod-ts">EOD · Yesterday</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AMARA DETAIL -->
+    <div id="s-amara" class="screen">
+      <button class="btn btn-sm" style="margin-bottom:14px" onclick="go('mine')">← Back</button>
+
+      <!-- Profile header -->
+      <div class="card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F0997B,#D85A30);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">AO</div>
+          <div style="flex:1">
+            <div style="font-size:17px;font-weight:700;color:#111">Amara Osei</div>
+            <div style="font-size:12px;color:#666;margin-top:1px">Junior Data Analyst — Dutch Fintech Co</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap">
+              <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#555;background:#f3f3f1;padding:2px 9px;border-radius:20px;border:1px solid rgba(0,0,0,.09)">
+                <svg width="10" height="10" viewBox="0 0 16 16" fill="#36C5F0"><path d="M6 0C4.34 0 3 1.34 3 3s1.34 3 3 3 3-1.34 3-3S7.66 0 6 0zm0 8C2.69 8 0 9.34 0 11v1h12v-1c0-1.66-2.69-3-6-3zm7-5v2h-2v2h2v2h2v-2h2V7h-2V5h-2z"/></svg>
+                @amara.osei
+              </span>
+              <span class="badge b-risk">Needs Attention</span>
+              <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#555;background:#f3f3f1;padding:2px 9px;border-radius:20px;border:1px solid rgba(0,0,0,.09)">TS Owner: Brian Kamau</span>
+              <span class="wk-badge">Week 3</span>
+              <span class="wk-badge">3-month programme</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:7px;flex-shrink:0">
+            <button class="btn btn-sm" onclick="toggle('notes-form-top')">Add Meeting Notes</button>
+            <button class="btn btn-sm btn-p" onclick="showModal('brief-modal')">Schedule Meeting</button>
+          </div>
+        </div>
+        <div id="notes-form-top" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,0,0,.07)">
+          <textarea placeholder="Paste or type your meeting notes. Buddy will extract follow-ups and blockers automatically..." id="notes-in" style="min-height:80px"></textarea>
+          <div style="display:flex;gap:6px;margin-top:7px">
+            <button class="btn btn-p btn-sm" onclick="saveNotes()">Save &amp; extract follow-ups</button>
+            <button class="btn btn-sm" onclick="toggle('notes-form-top')">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main 2-col layout -->
+      <div class="detail-grid">
+        <!-- LEFT COLUMN -->
+        <div>
+          <!-- Latest EOD -->
+          <div class="card" style="margin-bottom:12px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px">
+              <div style="font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.07em">Latest EOD</div>
+              <span style="font-size:10px;color:#aaa">Submitted 6:47 PM EAT · Apr 8</span>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:8px">Summary</div>
+            <div style="font-size:12px;line-height:1.75;color:#333;padding:11px 13px;background:#f7f7f5;border-radius:8px;border-left:3px solid #E24B4A">
+              Amara finished the dashboard component and submitted it for review, but GitLab CI/CD pipelines have been failing since the afternoon — blocking deployment to staging. She spent 2 hours debugging without success and her manager hasn't responded to her Slack message. She's uncertain whether to escalate. The timezone gap is compounding the delay in getting answers.
+            </div>
+            <div style="display:flex;align-items:center;gap:7px;margin-top:10px">
+              <span class="badge b-risk">At risk</span>
+              <span style="font-size:10px;color:#888">Blocker: CI/CD failure · Escalation hesitancy · Timezone gap</span>
+            </div>
+            <div class="buddy-reply" style="margin-top:10px"><div class="buddy-lbl">Buddy replied in thread</div>"Amara, shipping the dashboard component is a real win — that took focus. The pipeline issue is frustrating, especially when the timezone gap slows down the feedback loop. Tomorrow morning, if still unresolved, it's completely reasonable to send a short follow-up to your manager..."</div>
+          </div>
+
+          <!-- EOD History -->
+          <div class="card" style="margin-bottom:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div style="font-size:13px;font-weight:700">Previous EODs</div>
+              <span style="font-size:10px;color:#aaa">Showing recent entries</span>
+            </div>
+            <div class="eod-item">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><div class="eod-dt" style="font-weight:600;color:#333">Apr 7, 2025</div><span style="font-size:10px;color:#aaa">6:05 PM</span></div>
+              <div class="eod-txt">Good progress on the data pipeline today. Still finding it hard to understand exactly what my manager expects in terms of code comments — their feedback is very brief.</div>
+              <div style="margin-top:6px;display:flex;gap:6px"><span class="badge b-watch">Watch</span></div>
+            </div>
+            <div class="eod-item">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><div class="eod-dt" style="font-weight:600;color:#333">Apr 4, 2025</div><span style="font-size:10px;color:#aaa">5:45 PM</span></div>
+              <div class="eod-txt">Presented my analysis to the team. Got a "looks good" but nothing more specific. Not sure if I actually did well or if they're just being polite.</div>
+              <div style="margin-top:6px;display:flex;gap:6px"><span class="badge b-watch">Watch</span></div>
+            </div>
+            <div class="eod-item">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><div class="eod-dt" style="font-weight:600;color:#333">Apr 3, 2025</div><span style="font-size:10px;color:#aaa">6:30 PM</span></div>
+              <div class="eod-txt">Identified intermittent failures in GitLab CI; attempted fixes to job runner and cache. Couldn't resolve — will flag tomorrow.</div>
+              <div style="margin-top:6px;display:flex;gap:6px"><span class="badge b-watch">Watch</span></div>
+            </div>
+            <div class="eod-item" style="border-bottom:none">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><div class="eod-dt" style="font-weight:600;color:#333">Apr 1, 2025</div><span style="font-size:10px;color:#aaa">4:20 PM</span></div>
+              <div class="eod-txt">Kickoff: defined goals for the data pipeline task and milestones for the next two weeks. Good start.</div>
+              <div style="margin-top:6px;display:flex;gap:6px"><span class="badge b-stable">Stable</span></div>
+            </div>
+          </div>
+
+          <!-- Manager Feedback log -->
+          <div class="card">
+            <div class="sec-hdr"><span class="sec-t">Manager feedback log</span><button class="btn btn-sm btn-p" onclick="toggle('fb-form')">+ Log feedback</button></div>
+            <div id="fb-form" style="display:none;margin-bottom:12px">
+              <textarea placeholder="Paraphrase what the manager shared in the sync call..." style="min-height:70px"></textarea>
+              <div style="display:flex;gap:6px;margin-top:6px">
+                <button class="btn btn-p btn-sm" onclick="toggle('fb-form');toast('Feedback logged')">Save</button>
+                <button class="btn btn-sm" onclick="toggle('fb-form')">Cancel</button>
+              </div>
+            </div>
+            <div style="font-size:11px;color:#aaa;font-weight:600;margin-bottom:3px">Apr 1 — Weekly sync · Logged by Brian</div>
+            <div style="font-size:12px;line-height:1.65;color:#333;margin-bottom:12px">Manager noted Amara's work is solid but wants to see her ask questions earlier rather than waiting. Said she sometimes seems hesitant to speak up in group calls.</div>
+            <div style="font-size:11px;color:#aaa;font-weight:600;margin-bottom:3px">Mar 25 — Manager sync · Logged by Brian</div>
+            <div style="font-size:12px;line-height:1.65;color:#333">Good first two weeks. Manager happy with the quality of her data cleaning. No major concerns yet.</div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+          <!-- Follow-ups -->
+          <div class="card" style="margin-bottom:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
+              <div style="font-size:13px;font-weight:700">Follow-ups</div>
+              <span style="font-size:10px;font-weight:600;color:#A32D2D;background:#FCEBEB;padding:2px 7px;border-radius:20px">3 open</span>
+            </div>
+            <div class="fu-item"><div class="chk" id="c1" onclick="ck('c1')"></div><div><div class="fu-txt">Ask if the GitLab pipeline issue was resolved and whether she got support or had to figure it out alone.</div><div class="fu-src">From EOD — Apr 8</div></div></div>
+            <div class="fu-item"><div class="chk" id="c2" onclick="ck('c2')"></div><div><div class="fu-txt">Coordinate a pairing session with the engineering mentor to unblock the CI/CD issue.</div><div class="fu-src">From EOD — Apr 8</div></div></div>
+            <div class="fu-item"><div class="chk" id="c4" onclick="ck('c4')"></div><div><div class="fu-txt">Request engineering mentor to review pipeline logs before Friday.</div><div class="fu-src">From EOD — Apr 8</div></div></div>
+            <div class="fu-item" style="border-bottom:none"><div class="chk done" id="c3" onclick="ck('c3')"></div><div><div class="fu-txt" style="text-decoration:line-through;color:#aaa">Confirm she received feedback on her week 2 report.</div><div class="fu-src">Meeting notes · Apr 1 · Resolved</div></div></div>
+          </div>
+
+          <!-- Next Meeting -->
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px">Next meeting</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+              <div>
+                <div style="font-size:13px;font-weight:700;color:#111">Apr 9, 2025 · 10:00 AM EAT</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">30 min sync · With Brian Kamau (Talent Success)</div>
+              </div>
+            </div>
+            <button class="btn btn-p btn-sm" style="width:100%;justify-content:center" onclick="showModal('brief-modal')">Generate pre-call brief</button>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px">Quick actions</div>
+            <button class="btn" style="width:100%;justify-content:center;margin-bottom:7px" onclick="toast('Opening Slack...')">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="#36C5F0"><path d="M6 0C4.34 0 3 1.34 3 3s1.34 3 3 3 3-1.34 3-3S7.66 0 6 0zm0 8C2.69 8 0 9.34 0 11v1h12v-1c0-1.66-2.69-3-6-3zm7-5v2h-2v2h2v2h2v-2h2V7h-2V5h-2z"/></svg>
+              Message on Slack
+            </button>
+            <button class="btn" style="width:100%;justify-content:center;margin-bottom:7px" onclick="toast('Follow-up created')">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
+              Create follow-up
+            </button>
+            <button class="btn" style="width:100%;justify-content:center" onclick="go('flags')">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 1v14M3 1l9 3-9 4"/></svg>
+              View risk flag
+            </button>
+          </div>
+
+          <!-- Stats -->
+          <div class="card" style="margin-bottom:12px">
+            <div class="sec-t" style="margin-bottom:11px">Programme stats</div>
+            <div class="stat-row"><div class="stat-lbl">EODs this week</div><div class="stat-v">2 / 4 days</div></div>
+            <div class="stat-row"><div class="stat-lbl">Avg health signal</div><div class="stat-v" style="color:#854F0B">Watch</div></div>
+            <div class="stat-row"><div class="stat-lbl">Open blockers</div><div class="stat-v" style="color:#A32D2D">1</div></div>
+            <div class="stat-row"><div class="stat-lbl">Days in programme</div><div class="stat-v">21 of 90</div></div>
+            <div class="stat-row"><div class="stat-lbl">Last manager sync</div><div class="stat-v">Apr 1</div></div>
+            <div class="stat-row" style="border:none"><div class="stat-lbl">Phase</div><div class="stat-v">3-month</div></div>
+            <div style="margin-top:10px"><div style="font-size:10px;color:#888;margin-bottom:5px">Health trend (last 7 days)</div>
+            <div class="mini-chart"><div class="mb s" style="height:50%"></div><div class="mb s" style="height:70%"></div><div class="mb w" style="height:65%"></div><div class="mb w" style="height:60%"></div><div class="mb w" style="height:55%"></div><div class="mb r" style="height:85%"></div><div class="mb r" style="height:100%"></div></div></div>
+          </div>
+
+          <!-- Goals -->
+          <div class="card">
+            <div class="sec-t" style="margin-bottom:10px">Goals</div>
+            <div style="font-size:12px;padding:8px 10px;border-radius:7px;background:#FCEBEB;margin-bottom:7px"><div style="font-weight:600;margin-bottom:1px;color:#A32D2D">Understand CI/CD workflows</div><div style="color:#c04040;font-size:11px">Blocked · Pipeline issue unresolved</div></div>
+            <div style="font-size:12px;padding:8px 10px;border-radius:7px;background:#FAEEDA;margin-bottom:7px"><div style="font-weight:600;margin-bottom:1px;color:#854F0B">Build confidence giving feedback</div><div style="color:#a06010;font-size:11px">In progress · Week 4 target</div></div>
+            <div style="font-size:12px;padding:8px 10px;border-radius:7px;background:#EAF3DE"><div style="font-weight:600;margin-bottom:1px;color:#3B6D11">Deliver first independent analysis</div><div style="color:#4a8a18;font-size:11px">Done · Completed Week 2</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KOFI DETAIL -->
+    <div id="s-kofi" class="screen">
+      <button class="btn btn-sm" style="margin-bottom:14px" onclick="go('mine')">← Back</button>
+      <div class="card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#85B7EB,#378ADD);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">KN</div>
+          <div style="flex:1">
+            <div style="font-size:17px;font-weight:700">Kofi Nkrumah</div>
+            <div style="font-size:12px;color:#666;margin-top:1px">Backend Developer — LogiTech Berlin · Remote from Accra</div>
+            <div style="display:flex;gap:8px;margin-top:7px;flex-wrap:wrap">
+              <span style="font-size:11px;color:#555;background:#f3f3f1;padding:2px 9px;border-radius:20px;border:1px solid rgba(0,0,0,.09)">@kofi.nkrumah</span>
+              <span class="badge b-watch">Watch</span>
+              <span style="font-size:11px;color:#555;background:#f3f3f1;padding:2px 9px;border-radius:20px;border:1px solid rgba(0,0,0,.09)">TS Owner: Brian Kamau</span>
+              <span class="wk-badge">Week 5</span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-p">Generate sync brief</button>
+        </div>
+      </div>
+      <div class="detail-grid">
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Latest EOD</div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Summary</div>
+            <div style="font-size:12px;line-height:1.75;color:#333;padding:11px 13px;background:#f7f7f5;border-radius:8px;border-left:3px solid #EF9F27">Sprint deadline is Friday and Kofi is behind on two endpoints. Team lead hasn't reviewed his PR from yesterday. He's planning to work late to catch up. Feeling pressure but says it's manageable. Needs a sync with team lead tomorrow.</div>
+            <div style="margin-top:9px"><span class="badge b-watch">Watch</span><span style="font-size:10px;color:#888;margin-left:7px">Deadline pressure · Engagement gap · No EOD for 2 days</span></div>
+          </div>
+          <div class="card">
+            <div style="font-size:13px;font-weight:700;margin-bottom:12px">Previous EODs</div>
+            <div class="eod-item"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div class="eod-dt" style="font-weight:600;color:#333">Apr 6, 2025</div><span style="font-size:10px;color:#aaa">5:30 PM</span></div><div class="eod-txt">Sprint deadline is Friday and I'm behind on two endpoints. Going to work late tonight. Need sync with team lead tomorrow.</div><div style="margin-top:5px"><span class="badge b-watch">Watch</span></div></div>
+            <div class="eod-item" style="border:none"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div class="eod-dt" style="font-weight:600;color:#333">Apr 4, 2025</div><span style="font-size:10px;color:#aaa">6:10 PM</span></div><div class="eod-txt">Made progress on the payments API. PR submitted for review. Waiting on team lead feedback before merging.</div><div style="margin-top:5px"><span class="badge b-stable">Stable</span></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px">Follow-ups</div>
+            <div class="fu-item"><div class="chk" id="k1" onclick="ck('k1')"></div><div><div class="fu-txt">Check if the sprint deadline was met and how Kofi managed the workload.</div><div class="fu-src">From EOD — Apr 6</div></div></div>
+            <div class="fu-item" style="border:none"><div class="chk" id="k2" onclick="ck('k2')"></div><div><div class="fu-txt">Ask why no EOD for 2 days — gently probe without it feeling like surveillance.</div><div class="fu-src">Engagement flag — Today</div></div></div>
+          </div>
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px">Next meeting</div>
+            <div style="font-size:13px;font-weight:700;color:#111">Apr 11, 2025 · 2:00 PM EAT</div>
+            <div style="font-size:11px;color:#888;margin-top:2px;margin-bottom:10px">30 min check-in · With Brian Kamau</div>
+            <button class="btn btn-p btn-sm" style="width:100%;justify-content:center">Generate pre-call brief</button>
+          </div>
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px">Quick actions</div>
+            <button class="btn" style="width:100%;justify-content:center;margin-bottom:7px" onclick="toast('Opening Slack...')">Message on Slack</button>
+            <button class="btn" style="width:100%;justify-content:center" onclick="toast('Follow-up created')">Create follow-up</button>
+          </div>
+          <div class="card">
+            <div class="sec-t" style="margin-bottom:11px">Programme stats</div>
+            <div class="stat-row"><div class="stat-lbl">EODs this week</div><div class="stat-v" style="color:#A32D2D">1 / 4 days</div></div>
+            <div class="stat-row"><div class="stat-lbl">Avg health</div><div class="stat-v" style="color:#854F0B">Watch</div></div>
+            <div class="stat-row"><div class="stat-lbl">Days in programme</div><div class="stat-v">35 of 90</div></div>
+            <div class="stat-row" style="border:none"><div class="stat-lbl">Last manager sync</div><div class="stat-v">Mar 28</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ZARA DETAIL -->
+    <div id="s-zara" class="screen">
+      <button class="btn btn-sm" style="margin-bottom:14px" onclick="go('mine')">← Back</button>
+      <div class="card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#5DCAA5,#1D9E75);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">ZM</div>
+          <div style="flex:1">
+            <div style="font-size:17px;font-weight:700">Zara Mwangi</div>
+            <div style="font-size:12px;color:#666;margin-top:1px">UX Researcher — Dutch Fintech Co · Remote from Nairobi</div>
+            <div style="display:flex;gap:8px;margin-top:7px;flex-wrap:wrap">
+              <span style="font-size:11px;color:#555;background:#f3f3f1;padding:2px 9px;border-radius:20px;border:1px solid rgba(0,0,0,.09)">@zara.mwangi</span>
+              <span class="badge b-stable">Stable</span>
+              <span style="font-size:11px;color:#555;background:#f3f3f1;padding:2px 9px;border-radius:20px;border:1px solid rgba(0,0,0,.09)">TS Owner: Brian Kamau</span>
+              <span class="wk-badge">Week 4</span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-p">Generate sync brief</button>
+        </div>
+      </div>
+      <div class="detail-grid">
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Latest EOD</div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Summary</div>
+            <div style="font-size:12px;line-height:1.75;color:#333;padding:11px 13px;background:#f7f7f5;border-radius:8px;border-left:3px solid #639922">Zara ran 4 user interview sessions today — all productive, with participants very open. She's beginning to identify strong patterns around onboarding drop-off and is excited to synthesise findings tomorrow. Manager gave clear direction this week which has made a noticeable difference.</div>
+            <div style="margin-top:9px"><span class="badge b-stable">Stable</span></div>
+            <div class="buddy-reply" style="margin-top:10px"><div class="buddy-lbl">Buddy replied in thread</div>"Four interviews in one day is impressive — it takes real energy to stay present through each one. The pattern you're noticing around onboarding drop-off sounds genuinely valuable. Trust that instinct when you start synthesising tomorrow."</div>
+          </div>
+          <div class="card">
+            <div style="font-size:13px;font-weight:700;margin-bottom:12px">Previous EODs</div>
+            <div class="eod-item"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div class="eod-dt" style="font-weight:600;color:#333">Apr 7, 2025</div><span style="font-size:10px;color:#aaa">6:00 PM</span></div><div class="eod-txt">Recruited 6 participants for Thursday's sessions. Prepared discussion guide with manager feedback incorporated. Feeling well-prepared.</div><div style="margin-top:5px"><span class="badge b-stable">Stable</span></div></div>
+            <div class="eod-item" style="border:none"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div class="eod-dt" style="font-weight:600;color:#333">Apr 4, 2025</div><span style="font-size:10px;color:#aaa">5:50 PM</span></div><div class="eod-txt">Completed competitive analysis and presented findings to the product team. Feedback was positive — asked to expand one section.</div><div style="margin-top:5px"><span class="badge b-stable">Stable</span></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:13px;font-weight:700">Follow-ups</div><span style="font-size:10px;color:#888;background:#f3f3f1;padding:2px 7px;border-radius:20px">0 open</span></div>
+            <div style="font-size:12px;color:#aaa;text-align:center;padding:16px 0">No open follow-ups. Zara is on track.</div>
+          </div>
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px">Next meeting</div>
+            <div style="font-size:13px;font-weight:700;color:#111">Apr 14, 2025 · 9:00 AM EAT</div>
+            <div style="font-size:11px;color:#888;margin-top:2px;margin-bottom:10px">Weekly sync · With Brian Kamau</div>
+            <button class="btn btn-p btn-sm" style="width:100%;justify-content:center">Generate pre-call brief</button>
+          </div>
+          <div class="card" style="margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px">Quick actions</div>
+            <button class="btn" style="width:100%;justify-content:center;margin-bottom:7px" onclick="toast('Opening Slack...')">Message on Slack</button>
+            <button class="btn" style="width:100%;justify-content:center" onclick="toast('Follow-up created')">Create follow-up</button>
+          </div>
+          <div class="card">
+            <div class="sec-t" style="margin-bottom:11px">Programme stats</div>
+            <div class="stat-row"><div class="stat-lbl">EODs this week</div><div class="stat-v" style="color:#3B6D11">3 / 4 days</div></div>
+            <div class="stat-row"><div class="stat-lbl">Avg health</div><div class="stat-v" style="color:#3B6D11">Stable</div></div>
+            <div class="stat-row"><div class="stat-lbl">Open blockers</div><div class="stat-v">0</div></div>
+            <div class="stat-row" style="border:none"><div class="stat-lbl">Days in programme</div><div class="stat-v">28 of 90</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLAGS -->
+    <div id="s-flags" class="screen">
+      <div style="font-size:12px;color:#888;margin-bottom:14px">2 active flags across your portfolio.</div>
+      <div style="max-width:680px">
+        <div class="flag-c">
+          <div class="fl-row">
+            <div class="av av-c">AO</div>
+            <div class="fl-body">
+              <div class="fl-name">Amara Osei — Wellbeing concern <span class="badge b-risk" style="margin-left:6px">At risk</span></div>
+              <div class="fl-desc" style="margin-top:4px">Buddy detected consistent signals of isolation and overwhelm across 3 consecutive EODs. Amara is hesitating to ask for help and expressing uncertainty about her output quality. The timezone gap appears to be amplifying feelings of disconnection.</div>
+              <div class="fl-plan r"><strong>Proposed response:</strong> Reach out via DM before the Wednesday sync — a short warm check-in, not a formal conversation. In the sync, open with what's working before probing challenges. Consider suggesting a same-day escalation habit for blockers. Loop in her manager about the CI/CD issue if still unresolved.</div>
+              <div class="fl-acts">
+                <button class="btn btn-sm btn-p" onclick="go('amara')">View profile</button>
+                <button class="btn btn-sm" onclick="toast('Response plan logged')">Log response</button>
+                <button class="btn btn-sm" onclick="toast('Flag dismissed')">Dismiss</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flag-c w">
+          <div class="fl-row">
+            <div class="av av-b">KN</div>
+            <div class="fl-body">
+              <div class="fl-name">Kofi Nkrumah — Engagement gap <span class="badge b-watch" style="margin-left:6px">Watch</span></div>
+              <div class="fl-desc" style="margin-top:4px">No EOD submitted for 2 business days. Last EOD mentioned deadline pressure and working late. No response to Buddy's gentle DM check-in sent this morning.</div>
+              <div class="fl-plan w"><strong>Proposed response:</strong> Send a direct Slack message today — frame it as checking in on the sprint, not the EOD absence. If no response by tomorrow, flag to team lead.</div>
+              <div class="fl-acts">
+                <button class="btn btn-sm btn-p" onclick="go('kofi')">View profile</button>
+                <button class="btn btn-sm" onclick="toast('Response plan logged')">Log response</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEETINGS -->
+    <div id="s-meetings" class="screen">
+      <div class="g2" style="max-width:760px">
+        <div>
+          <div class="sec-hdr" style="margin-bottom:10px"><span class="sec-t">This week · Apr 7–11</span></div>
+          <div class="mtg-c"><div class="mtg-date"><div class="mtg-day">7</div><div class="mtg-mon">Apr</div></div><div class="mtg-info"><div class="mtg-name">Zara Mwangi — weekly sync</div><div class="mtg-time">Mon · 9:00 AM EAT</div></div><span class="badge b-stable">Done</span></div>
+          <div class="mtg-c"><div class="mtg-date"><div class="mtg-day">9</div><div class="mtg-mon">Apr</div></div><div class="mtg-info"><div class="mtg-name">Amara Osei — weekly sync</div><div class="mtg-time">Wed · 10:00 AM EAT</div></div><button class="btn btn-sm btn-p" onclick="go('amara')">Brief</button></div>
+          <div class="mtg-c"><div class="mtg-date"><div class="mtg-day">10</div><div class="mtg-mon">Apr</div></div><div class="mtg-info"><div class="mtg-name">Dutch Fintech Co — manager sync</div><div class="mtg-time">Thu · 3:00 PM EAT</div></div><button class="btn btn-sm">Prep</button></div>
+          <div class="mtg-c"><div class="mtg-date"><div class="mtg-day">11</div><div class="mtg-mon">Apr</div></div><div class="mtg-info"><div class="mtg-name">Kofi Nkrumah — check-in</div><div class="mtg-time">Fri · 2:00 PM EAT</div></div><button class="btn btn-sm btn-p" onclick="go('kofi')">Brief</button></div>
+        </div>
+        <div>
+          <div class="sec-t" style="margin-bottom:10px">Log meeting notes</div>
+          <div class="card">
+            <div style="margin-bottom:10px"><div style="font-size:11px;color:#888;margin-bottom:4px">Fellow</div><select><option>Amara Osei</option><option>Kofi Nkrumah</option><option>Zara Mwangi</option></select></div>
+            <div style="margin-bottom:10px"><div style="font-size:11px;color:#888;margin-bottom:4px">Meeting date</div><input type="text" value="Apr 9, 2025"></div>
+            <div style="margin-bottom:10px"><div style="font-size:11px;color:#888;margin-bottom:4px">Notes</div><textarea placeholder="Add your meeting notes here. Buddy will automatically extract blockers, next steps, and follow-up points for the fellow's profile..." style="min-height:110px"></textarea></div>
+            <button class="btn btn-p" style="width:100%;justify-content:center" onclick="toast('Notes saved — follow-ups extracted by Buddy')">Save notes &amp; extract follow-ups</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SYNC BRIEF MODAL -->
+<div class="overlay" id="brief-modal" onclick="closeModal(event,'brief-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <div><div style="font-size:15px;font-weight:700">Pre-call brief · Amara Osei</div><div style="font-size:11px;color:#888;margin-top:2px">Generated by Buddy · Claude Sonnet · Manager sync prep</div></div>
+      <button class="btn btn-sm" onclick="hideModal('brief-modal')">Close</button>
+    </div>
+    <div class="brief-sec">
+      <div class="brief-hd">What's going well</div>
+      <div class="brief-txt">Amara is showing strong initiative — she completed the dashboard component ahead of schedule and proactively documented her process when she ran out of assigned tasks. Her written communication in EODs is detailed and thoughtful, suggesting she processes feedback carefully even when it's vague.</div>
+    </div>
+    <div class="brief-sec">
+      <div class="brief-hd">Current concerns</div>
+      <div class="brief-txt">A CI/CD pipeline issue has been unresolved for over 24 hours with no manager response. Amara is hesitating to escalate — a pattern from week 2 as well. The timezone gap is creating compounding communication delays. Three consecutive EODs have referenced uncertainty about output quality.</div>
+    </div>
+    <div class="brief-sec">
+      <div class="brief-hd">Suggested questions for the manager</div>
+      <div class="q-item"><div class="q-num">1</div><div class="q-txt">How has Amara's output quality compared to your expectations at this point in the placement?</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-txt">Is the team aware of the CI/CD access issue? Has it been escalated on their end?</div></div>
+      <div class="q-item"><div class="q-num">3</div><div class="q-txt">Does Amara have a clear channel for asking questions when the timezone gap creates delays?</div></div>
+      <div class="q-item"><div class="q-num">4</div><div class="q-txt">How is her integration with the team going socially — is she included in informal discussions?</div></div>
+      <div class="q-item"><div class="q-num">5</div><div class="q-txt">What would "great" look like for Amara by end of month 1, in the manager's own words?</div></div>
+    </div>
+    <div style="display:flex;gap:7px;padding-top:12px">
+      <button class="btn btn-p btn-sm" onclick="toast('Brief marked as used');hideModal('brief-modal')">Mark as used</button>
+      <button class="btn btn-sm" onclick="hideModal('brief-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+const titles={dash:'Dashboard',fellows:'All Fellows',mine:'My Fellows',amara:'Amara Osei',kofi:'Kofi Nkrumah',zara:'Zara Mwangi',flags:'Risk Flags',meetings:'Meetings'};
+const navMap={dash:'dash',fellows:'fellows',mine:'mine',amara:'mine',kofi:'mine',zara:'mine',flags:'flags',meetings:'meetings'};
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  const s=document.getElementById('s-'+id);
+  if(s)s.classList.add('on');
+  document.getElementById('tb-title').textContent=titles[id]||id;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  const parent=navMap[id]||id;
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+parent+"'"))b.classList.add('on');
+  });
+}
+
+function swTab(btn,tabId){
+  btn.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  const sc=btn.closest('.screen');
+  ['t-all','t-mine'].forEach(id=>{const el=sc.querySelector('#'+id);if(el)el.style.display='none'});
+  const t=sc.querySelector('#'+tabId);
+  if(t)t.style.display='';
+}
+
+function ck(id){document.getElementById(id).classList.toggle('done')}
+
+function toggle(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'':'none';}
+
+function chipOn(el){el.closest('div').querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+
+function showModal(id){document.getElementById(id).classList.add('show')}
+function hideModal(id){document.getElementById(id).classList.remove('show')}
+function closeModal(e,id){if(e.target===document.getElementById(id))hideModal(id)}
+
+function saveNotes(){
+  const v=document.getElementById('notes-in').value;
+  if(!v.trim()){toast('Add some notes first');return;}
+  toggle('notes-form');
+  toast('Notes saved — follow-ups extracted by Buddy');
+}
+
+function toast(msg){
+  const t=document.getElementById('toast-el');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+</script>
+</body>
+</html>
